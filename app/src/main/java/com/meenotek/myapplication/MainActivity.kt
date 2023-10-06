@@ -1,68 +1,91 @@
 package com.meenotek.myapplication
 
-import android.content.Context
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.meenotek.myapplication.databinding.ActivityMainBinding
+import java.text.DecimalFormat
 import java.text.NumberFormat
+import kotlin.math.ceil
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    // Define conversion rates
+    private val ngnToUsd = 0.0013
+    private val ngnToPound = 0.0011
+    private val ngnToEuro = 0.0012
+    private val ngnToBitcoin = 0.00000045
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.calculateButton.setOnClickListener { calculateTip() }
+        binding.convertButton.setOnClickListener { convertCurrency() }
 
         // Set a key listener for the EditText
-        binding.costOfServiceEditText.setOnKeyListener { _, keyCode, event ->
+        binding.amountToConvertText.setOnKeyListener { _, keyCode, event ->
             handleKeyEvent(event, keyCode)
         }
+
+        // Set the initial value of conversionResult to 0.00 naira
+        val initialAmount = NumberFormat.getCurrencyInstance().format(0.00)
+        binding.conversionResult.text = getString(R.string.amount, initialAmount)
     }
 
-    private fun calculateTip() {
-        val stringInTextField = binding.costOfServiceEditText.text.toString()
-        val cost = stringInTextField.toDoubleOrNull()
-
-        if (cost == null || cost == 0.0) {
-            displayTip(0.0)
+    private fun convertCurrency() {
+        // To check for null input
+        val userInput = binding.amountToConvertText.text.toString().toDoubleOrNull()
+        if (userInput == null) {
+            binding.conversionResult.text = ""
             return
         }
 
-        val tipPercentage = when (binding.tipOptions.checkedRadioButtonId) {
-            R.id.option_twenty_percent -> 0.20
-            R.id.option_eighteen_percent -> 0.18
-            else -> 0.15
+        // To make conversion
+        val conversion = when (binding.conversionOptions.checkedRadioButtonId) {
+            R.id.dollar -> ngnToUsd
+            R.id.pounds -> ngnToPound
+            R.id.euros -> ngnToEuro
+            else -> ngnToBitcoin
         }
 
-        var tip = tipPercentage * cost
+        // To calculate conversion
+        var calculateConversion = conversion * userInput
 
-        if (binding.roundUpSwitch.isChecked) {
-            tip = kotlin.math.ceil(tip)
+        // To do the roundup
+        val roundUp = binding.roundUpSwitch.isChecked
+        // We're rounding up, not down
+        if (roundUp) {
+            calculateConversion = ceil(calculateConversion)
         }
 
-        displayTip(tip)
+        val formattedResult = when (binding.conversionOptions.checkedRadioButtonId) {
+            R.id.dollar, R.id.pounds, R.id.euros -> formatCurrency(calculateConversion)
+            R.id.bitcoin -> formatBitcoin(calculateConversion)
+            else -> ""
+        }
+
+        // Set the formatted result text
+        binding.conversionResult.text = getString(R.string.amount, formattedResult)
     }
 
-    private fun displayTip(tip: Double) {
-        val formattedTip = NumberFormat.getCurrencyInstance().format(tip)
-        binding.tipResult.text = getString(R.string.tip_amount, formattedTip)
+    private fun formatCurrency(amount: Double): String {
+        val formatter = DecimalFormat("#,##0.00") // Adjust the pattern for your needs
+        return formatter.format(amount)
     }
 
-    private fun handleKeyEvent(event: KeyEvent?, keyCode: Int): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_ENTER && event?.action == KeyEvent.ACTION_UP) {
-            // Hide the keyboard
-            val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(
-                binding.costOfServiceEditText.windowToken,
-                0
-            )
+    private fun formatBitcoin(amount: Double): String {
+        val formatter = DecimalFormat("#,##0.00000000") // Adjust the pattern for Bitcoin
+        return formatter.format(amount)
+    }
+
+    private fun handleKeyEvent(event: KeyEvent, keyCode: Int): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
             return true
         }
         return false

@@ -1,5 +1,3 @@
-
-<!-- Layout for the tip calculator -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,82 +10,94 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
+        <!-- Icon for currency -->
         <ImageView
-            android:id="@+id/icon_cost_of_service"
+            android:id="@+id/icon_currency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:importantForAccessibility="no"
-            app:layout_constraintBottom_toBottomOf="@id/cost_of_service"
+            app:layout_constraintBottom_toBottomOf="@id/amount_to_convert"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/cost_of_service"
-            app:srcCompat="@drawable/ic_store" />
+            app:layout_constraintTop_toTopOf="@id/amount_to_convert"
+            app:srcCompat="@drawable/ic_currency" />
 
+        <!-- Input field for amount -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/cost_of_service"
+            android:id="@+id/amount_to_convert"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:hint="@string/cost_of_service"
-            app:layout_constraintStart_toEndOf="@id/icon_cost_of_service"
+            android:hint="@string/amount_to_convert"
+            app:layout_constraintStart_toEndOf="@id/icon_currency"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/cost_of_service_edit_text"
+                android:id="@+id/amount_to_convert_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Icon for choose currency -->
         <ImageView
-            android:id="@+id/icon_service_question"
+            android:id="@+id/icon_choose_currency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:importantForAccessibility="no"
-            app:layout_constraintBottom_toBottomOf="@id/service_question"
+            app:layout_constraintBottom_toBottomOf="@id/choose_currency"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/service_question"
+            app:layout_constraintTop_toTopOf="@id/choose_currency"
             app:srcCompat="@drawable/ic_service" />
 
+        <!-- Text for choose currency -->
         <TextView
-            android:id="@+id/service_question"
+            android:id="@+id/choose_currency"
             style="@style/Widget.TipTime.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/how_was_the_service"
-            app:layout_constraintStart_toStartOf="@id/cost_of_service"
-            app:layout_constraintTop_toBottomOf="@id/cost_of_service" />
+            android:text="@string/choose_currency"
+            app:layout_constraintStart_toStartOf="@id/amount_to_convert"
+            app:layout_constraintTop_toBottomOf="@id/amount_to_convert" />
 
+        <!-- RadioGroup for conversion options -->
         <RadioGroup
-            android:id="@+id/tip_options"
+            android:id="@+id/conversion_options"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checkedButton="@id/option_twenty_percent"
+            android:checkedButton="@id/dollar"
             android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="@id/service_question"
-            app:layout_constraintTop_toBottomOf="@id/service_question">
+            app:layout_constraintStart_toStartOf="@id/choose_currency"
+            app:layout_constraintTop_toBottomOf="@id/choose_currency">
 
             <RadioButton
-                android:id="@+id/option_twenty_percent"
+                android:id="@+id/dollar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/amazing_service" />
+                android:text="@string/dollars" />
 
             <RadioButton
-                android:id="@+id/option_eighteen_percent"
+                android:id="@+id/pounds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/good_service" />
+                android:text="@string/pounds" />
 
             <RadioButton
-                android:id="@+id/option_fifteen_percent"
+                android:id="@+id/euros"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ok_service" />
+                android:text="@string/euros" />
+
+            <RadioButton
+                android:id="@+id/bitcoin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bitcoin" />
 
         </RadioGroup>
 
+        <!-- Icon for round up switch -->
         <ImageView
             android:id="@+id/icon_round_up"
             android:layout_width="wrap_content"
@@ -98,34 +108,37 @@
             app:layout_constraintTop_toTopOf="@id/round_up_switch"
             app:srcCompat="@drawable/ic_round_up" />
 
+        <!-- Switch for round up conversion -->
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/round_up_switch"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="@string/round_up_tip"
+            android:text="@string/round_up_conversion"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/tip_options"
-            app:layout_constraintTop_toBottomOf="@id/tip_options" />
+            app:layout_constraintStart_toStartOf="@id/conversion_options"
+            app:layout_constraintTop_toBottomOf="@id/conversion_options" />
 
+        <!-- Button to calculate conversion -->
         <Button
-            android:id="@+id/calculate_button"
+            android:id="@+id/convert_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/calculate"
+            android:text="@string/convert"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/round_up_switch"
             app:layout_constraintTop_toBottomOf="@id/round_up_switch" />
 
+        <!-- Result TextView formatted as "Amount: (amount based on the calculation and currency chosen)" -->
         <TextView
-            android:id="@+id/tip_result"
+            android:id="@+id/conversion_result"
             style="@style/Widget.TipTime.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/calculate_button"
-            tools:text="Tip Amount: $10" />
+            app:layout_constraintTop_toBottomOf="@id/convert_button"
+            android:text="@string/amount" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
